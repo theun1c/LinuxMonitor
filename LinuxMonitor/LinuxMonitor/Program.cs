@@ -1,4 +1,7 @@
-﻿namespace LinuxMonitor
+﻿
+using System.Diagnostics;
+
+namespace LinuxMonitor
 {
     internal class Program
     {
@@ -8,18 +11,37 @@
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            var thread1 = new Thread(ForTest); // создаем поток
-            thread1.Start(1); // запускаем с передачей параметра 
+            var cpuThread = new Thread(CPUMonitor);
+            cpuThread.Start();
+            var memoryThread = new Thread(MemoryMonitor);
+            memoryThread.Start();
+            var memoryInfo = GC.GetGCMemoryInfo();
+            Console.WriteLine($"Доступно памяти: {memoryInfo.MemoryLoadBytes / 1024 / 1024} MB");
         }
 
-        /// <summary>
-        /// функция для запуска в потоке
-        /// </summary>
-        /// <param name="data"></param>
-        private static void ForTest(object data) 
-        { 
-            int threadNum = (int)data; // преобразование типа даты 
-            Console.WriteLine($"Hi from thread #{threadNum}"); // просто вывод в консольку
+        private static void CPUMonitor()
+        {
+            var CPUCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+
+            while (true) 
+            {
+                // CPU usage
+                Console.WriteLine($"CPU usage: {CPUCounter.NextValue()}%");
+                Thread.Sleep(500);
+            }
+        }
+
+        private static void MemoryMonitor()
+        {
+            var memoryCounter = new PerformanceCounter("Memory", "Available MBytes");
+
+            int total = 16384; // GB
+            while (true)
+            {
+                Console.WriteLine($"Memory usage: {100 - ((memoryCounter.NextValue() / total) * 100)}%");
+
+                Thread.Sleep(500);
+            }
         }
     }
 }
