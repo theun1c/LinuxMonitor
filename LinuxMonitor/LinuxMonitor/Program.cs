@@ -1,5 +1,4 @@
-﻿
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace LinuxMonitor
 {
@@ -11,37 +10,29 @@ namespace LinuxMonitor
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            var cpuThread = new Thread(CPUMonitor);
-            cpuThread.Start();
-            var memoryThread = new Thread(MemoryMonitor);
-            memoryThread.Start();
-            var memoryInfo = GC.GetGCMemoryInfo();
-            Console.WriteLine($"Доступно памяти: {memoryInfo.MemoryLoadBytes / 1024 / 1024} MB");
+            string cpuInfo = ExecuteLinuxCommand("cat /proc/stat | head -n 1");
+            Console.WriteLine(cpuInfo); // cpu  1234 567 890 123456 0 0 0 0 0 0
         }
 
-        private static void CPUMonitor()
+        public static string ExecuteLinuxCommand(string command)
         {
-            var CPUCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-
-            while (true) 
+            var process = new Process()
             {
-                // CPU usage
-                Console.WriteLine($"CPU usage: {CPUCounter.NextValue()}%");
-                Thread.Sleep(500);
-            }
-        }
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"{command}\"",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                }
+            };
 
-        private static void MemoryMonitor()
-        {
-            var memoryCounter = new PerformanceCounter("Memory", "Available MBytes");
+            process.Start();
+            string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
 
-            int total = 16384; // GB
-            while (true)
-            {
-                Console.WriteLine($"Memory usage: {100 - ((memoryCounter.NextValue() / total) * 100)}%");
-
-                Thread.Sleep(500);
-            }
+            return output;
         }
     }
 }
