@@ -1,37 +1,65 @@
-﻿using System.Diagnostics;
+﻿using LinuxMonitor.Logging;
+using System.Diagnostics;
 
 namespace LinuxMonitor.BashExecutor
 {
+    /// <summary>
+    /// класс исполнителя команд
+    /// </summary>
     public class LinuxExecutor
     {
-        public string Command { get; set; } // вроде бы и юзлесс но пускай будет
+        private readonly ILogger _logger; // инициализация логгера
 
-        // TODO: добавит логгирование
+        // конструктор с передачей логгера 
+        public LinuxExecutor(ILogger logger)
+        {
+            _logger = logger;
+        }
+
         // TODO: добавить обработку аутпута
         /// <summary>
-        /// ТЕСТОВЫЙ МЕТОД ДЛЯ ВВОДА КОМАНД В БАШ
+        ///  МЕТОД ДЛЯ ВВОДА КОМАНД В БАШ
         /// </summary>
-        /// <param name="command"></param>
-        /// <returns></returns>
+        /// <param name="command">команда, которую следует выполнить</param>
+        /// <returns>аутпут</returns>
         public string ExecuteLinuxCommand(string command)
         {
-            var process = new Process() // создает объект процесса 
+            try
             {
-                StartInfo = new ProcessStartInfo // настройки запуска внешнего процесса
+                var process = new Process() // создает объект процесса 
                 {
-                    FileName = "/bin/bash", // указывам какую внешнюю оболочку запускаем 
-                    Arguments = $"-c \"{command}\"", // типо bash -c "ls -l" 
-                    RedirectStandardOutput = true, // ПЕРЕНАПРАВЛЯЕТ ВЫПОЛНЕНИЕ КОМАНДЫЫ БАША ВМЕСТО КОНСОЛИ в код
-                    UseShellExecute = false, // отключаем использование оболочки винды !! нужно чтобы работал редирект
-                    CreateNoWindow = true, // не показывать окно терминала
+                    StartInfo = new ProcessStartInfo // настройки запуска внешнего процесса
+                    {
+                        FileName = "/bin/bash", // указывам какую внешнюю оболочку запускаем 
+                        Arguments = $"-c \"{command}\"", // типо bash -c "ls -l" 
+                        RedirectStandardOutput = true, // ПЕРЕНАПРАВЛЯЕТ ВЫПОЛНЕНИЕ КОМАНДЫЫ БАША ВМЕСТО КОНСОЛИ в код
+                        RedirectStandardError = true, // тож самое, но только для ошибок
+                        UseShellExecute = false, // отключаем использование оболочки винды !! нужно чтобы работал редирект
+                        CreateNoWindow = true, // не показывать окно терминала
+                    }
+                };
+
+                _logger.Info($"Executing command: {command}"); // указывает о начале выполнении команды
+                process.Start(); // запускаем процесс
+
+                string output = process.StandardOutput.ReadToEnd(); // считывает stdout
+                string error = process.StandardError.ReadToEnd(); // считывает стандарт еррор
+                
+                process.WaitForExit(); // ожидание выполнения
+
+                // если еррор поймал ошибку - то выведется варнинг
+                if(!string.IsNullOrWhiteSpace(error))
+                {
+                    _logger.Warn($"[output error warning]: {error}");
                 }
-            };
 
-            process.Start(); // запускаем процесс
-            string output = process.StandardOutput.ReadToEnd(); // считывает stdout
-            process.WaitForExit(); // ожидание выполнения
-
-            return output; // просто возвращаем строку
+                return output; // возврат аутпута 
+            }
+            catch (Exception ex) 
+            {
+                _logger.Error($"Exception while executing: {command}"); // вывод сведений об ошибке (красный цвет)
+                return string.Empty; // возврат пустой строки
+            }
         }
     }
 }
