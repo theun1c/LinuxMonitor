@@ -1,41 +1,66 @@
 ﻿using LinuxMonitor.BashExecutor;
+using LinuxMonitor.Logging;
+using System.Runtime.CompilerServices;
 
 namespace LinuxMonitor
 {
     internal class Program
     {
         /// <summary>
-        /// точка входа да
+        /// мейн с асинком
         /// </summary>
         /// <param name="args"></param>
-        static void Main(string[] args)
+        /// <returns></returns>
+        static async Task Main(string[] args)
         {
-            LinuxExecutor linuxExecutor = new LinuxExecutor(); // потом мб перепишу 
-            linuxExecutor.Command = "free -h"; // задаем команлу
-            // запускаем поток ОЗУ
-            var memoryThread = new Thread(() =>
+            // использую канселешн токен для обработки сочетания ктрл + Ц в консольке
+            var cts = new CancellationTokenSource(); // новый объект токена
+            // s - sender e - event args
+            Console.CancelKeyPress += (s, e) => // подписка на событие Кенсен Кей Пресс
             {
-                while (true) // пока не нажмут ctrl C
-                {
-                    string output = linuxExecutor.ExecuteLinuxCommand(linuxExecutor.Command); // получаем аутпут команды
-                    Console.WriteLine(output); // вывод полученной строки
-                    Thread.Sleep(2_000); // задержка печати в 1с
-                }
-            });
-            memoryThread.Start(); // запуск потока
+                e.Cancel = true; // отмена стандартного поведения (завершения приложения)
+                cts.Cancel(); // запуск отмены операций через CancellationTokenSource !!! механизм кооперативной отмены
+                // операции с токеном получают уведомление, что нужно прекратить работу
+            };
 
+            var logger = new ConsoleLogger(); // создание консольного логгера 
 
-            string command = "top -bn1 | grep \"Cpu\\(s\\)\"";
-            var CPUThread = new Thread(() =>
+            // запуск мониторинга
+            await Task.WhenAll(
+                // КОМАНДА МЕТКА ЛОГГЕР ТОКЕН
+                MonitorAsync("free -h", "[MEM]", logger, cts.Token),
+                MonitorAsync("top -bn1 | grep \"Cpu\\(s\\)\"", "[CPU]", logger, cts.Token)
+            );
+         
+        }
+
+        /// <summary>
+        /// асинхронный метод мониторинга. 
+        /// </summary>
+        /// <param name="command"> КОМАНДА, которую следует исполнить в баше </param>
+        /// <param name="label"> Метка, указывает на то, для чего команда используется </param>
+        /// <param name="logger"> Логгер, необходимый для логгирования </param>
+        /// <param name="cancellationToken"> Токен завершения действий </param>
+        /// <returns></returns>
+        static async Task MonitorAsync(string command, string label, ILogger logger, CancellationToken cancellationToken)
+        {
+            var executor = new LinuxExecutor(logger); // создание объекта экзекутора с передачей токена
+            while (!cancellationToken.IsCancellationRequested) // пока не пришло уведомление о завершении 
             {
-                while (true)
+                string output = executor.ExecuteLinuxCommand(command); // вывод 
+                logger.Info($"{label} output:\n{output}"); // с помощью логгер авыводим информацию в консоль
+
+                try
                 {
-                    string output = linuxExecutor.ExecuteLinuxCommand(command);
-                    Console.WriteLine(output);
-                    Thread.Sleep(2_000);
+                    await Task.Delay(2_000, cancellationToken); // задержка в 2 секунды на выполнение 
                 }
-            });
-            CPUThread.Start();
+                catch (TaskCanceledException) // если программа завершилась при ктрл Ц (с помощью токена)
+                {
+                    logger.Warn($"{label} monitoring cancelled"); // вывод предупреждения (желтый) в консоль
+                    break; 
+                }
+            }
+            logger.Info($"{label} monitoring finished"); // отчет об успешном завершении мониторинга
         }
     }
 }
