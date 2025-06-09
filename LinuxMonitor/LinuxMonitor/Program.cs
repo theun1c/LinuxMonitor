@@ -11,9 +11,31 @@ namespace LinuxMonitor
         static void Main(string[] args)
         {
             LinuxExecutor linuxExecutor = new LinuxExecutor(); // потом мб перепишу 
-            linuxExecutor.Command = "free -h"; // задаем команлу 
-            var output = linuxExecutor.ExecuteLinuxCommand(linuxExecutor.Command); // передаем
-            Console.WriteLine(output); // выводим
+            linuxExecutor.Command = "free -h"; // задаем команлу
+            // запускаем поток ОЗУ
+            var memoryThread = new Thread(() =>
+            {
+                while (true) // пока не нажмут ctrl C
+                {
+                    string output = linuxExecutor.ExecuteLinuxCommand(linuxExecutor.Command); // получаем аутпут команды
+                    Console.WriteLine(output); // вывод полученной строки
+                    Thread.Sleep(2_000); // задержка печати в 1с
+                }
+            });
+            memoryThread.Start(); // запуск потока
+
+
+            string command = "top -bn1 | grep \"Cpu\\(s\\)\"";
+            var CPUThread = new Thread(() =>
+            {
+                while (true)
+                {
+                    string output = linuxExecutor.ExecuteLinuxCommand(command);
+                    Console.WriteLine(output);
+                    Thread.Sleep(2_000);
+                }
+            });
+            CPUThread.Start();
         }
     }
 }
