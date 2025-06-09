@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinuxMonitor", "LinuxMonitor.csproj", "{56F71895-2254-62A7-231A-394D44C6D8FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{56F71895-2254-62A7-231A-394D44C6D8FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56F71895-2254-62A7-231A-394D44C6D8FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56F71895-2254-62A7-231A-394D44C6D8FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56F71895-2254-62A7-231A-394D44C6D8FD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E0A2067C-19D4-46AD-ACFF-4A12D5C0B4B0}
+	EndGlobalSection
+EndGlobal
