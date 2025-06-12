@@ -53,13 +53,6 @@ namespace LinuxMonitor.BashExecutor
                     _logger.Warn($"[output error warning]: {error}");
                 }
 
-                //string[] word = output.Split(' ');
-                //foreach (var s in word) 
-                //{
-                //    if (s != "")
-                //        _logger.DebuggingLog(s);
-                //}
-
                 return output; // возврат аутпута 
             }
             catch (Exception ex) 

@@ -1,14 +1,10 @@
 {
   "profiles": {
-    "SSH Debugging": {
+    "LinuxMonitor": {
       "commandName": "Project",
-      "executablePath": "dotnet",
-      "commandLineArgs": "//media//sf_main-astra//LinuxMonitor//LinuxMonitor//LinuxMonitor//bin/Debug//net8.0//LinuxMonitor.dll",
-      "workingDirectory": "//media//sf_main-astra//LinuxMonitor//LinuxMonitor//LinuxMonitor",
-      "remoteMachine": "192.168.0.22",
-      "authenticationType": "ssh",
-      "sshUser": "theun1c",
-      "remoteDebugEnabled": true
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
     }
   }
 }
