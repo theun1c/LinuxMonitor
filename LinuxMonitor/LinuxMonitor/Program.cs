@@ -92,19 +92,7 @@ namespace LinuxMonitor
                     }
                 }
             }
-            //logger.Info($"{label} output:\n{output}"); // с помощью логгер авыводим информацию в консоль
-
-            //    try
-            //    {
-            //        await Task.Delay(5_000, cancellationToken); // задержка в милисеках
-            //                                                    // поставить 300 _000 для 5 минут
-            //    }
-            //    catch (TaskCanceledException) // если программа завершилась при ктрл Ц (с помощью токена)
-            //    {
-            //        logger.Warn($"{label} monitoring cancelled"); // вывод предупреждения (желтый) в консоль
-            //        break;
-            //    }
-            //}
+          
             logger.Info($"{label} monitoring finished"); // отчет об успешном завершении мониторинга
 
             
