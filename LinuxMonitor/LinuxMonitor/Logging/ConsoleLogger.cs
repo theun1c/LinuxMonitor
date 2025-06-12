@@ -15,6 +15,7 @@ namespace LinuxMonitor.Logging
         public void Error(string message) => Write(message, "[ERROR]", ConsoleColor.Red);
         public void Info(string message) => Write(message, "[INFO]", ConsoleColor.Green);
         public void Warn(string message) => Write(message, "[WARN]", ConsoleColor.Yellow);
+        //public void DebuggingLog(string message) => Write(message, "[DEGUG]", ConsoleColor.Cyan);
 
         /// <summary>
         /// главный метод вывода в консоль
