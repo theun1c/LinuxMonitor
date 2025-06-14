@@ -3,62 +3,54 @@ using System.Diagnostics;
 
 namespace LinuxMonitor.BashExecutor
 {
-    /// <summary>
-    /// класс исполнителя команд
-    /// </summary>
     public class LinuxExecutor
     {
-        private readonly ILogger _logger; // инициализация логгера
+        private readonly ILogger _logger; 
 
-        // конструктор с передачей логгера 
         public LinuxExecutor(ILogger logger)
         {
             _logger = logger;
         }
 
-        // TODO: добавить обработку аутпута
-        /// <summary>
-        ///  МЕТОД ДЛЯ ВВОДА КОМАНД В БАШ
-        /// </summary>
-        /// <param name="command">команда, которую следует выполнить</param>
-        /// <returns>аутпут</returns>
-        public string ExecuteLinuxCommand(string command)
+        public async Task<string> ExecuteLinuxCommandAsync(string command)
         {
             try
             {
-                var process = new Process() // создает объект процесса 
+                var process = new Process()
                 {
-                    StartInfo = new ProcessStartInfo // настройки запуска внешнего процесса
+                    StartInfo = new ProcessStartInfo
                     {
-                        FileName = "/bin/bash", // указывам какую внешнюю оболочку запускаем 
-                        Arguments = $"-c \"{command}\"", // типо bash -c "ls -l" 
-                        RedirectStandardOutput = true, // ПЕРЕНАПРАВЛЯЕТ ВЫПОЛНЕНИЕ КОМАНДЫЫ БАША ВМЕСТО КОНСОЛИ в код
-                        RedirectStandardError = true, // тож самое, но только для ошибок
-                        UseShellExecute = false, // отключаем использование оболочки винды !! нужно чтобы работал редирект
-                        CreateNoWindow = true, // не показывать окно терминала
+                        FileName = "/bin/bash",
+                        Arguments = $"-c \"{command}\"",
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
                     }
                 };
 
-                _logger.Info($"Executing command: {command}"); // указывает о начале выполнении команды
-                process.Start(); // запускаем процесс
+                _logger.Info($"Executing command: {command}");
+                process.Start(); 
 
-                string output = process.StandardOutput.ReadToEnd(); // считывает stdout
-                string error = process.StandardError.ReadToEnd(); // считывает стандарт еррор
-                
-                process.WaitForExit(); // ожидание выполнения
+                Task<string> outputTask = process.StandardOutput.ReadToEndAsync(); 
+                Task<string> errorTask = process.StandardError.ReadToEndAsync(); 
 
-                // если еррор поймал ошибку - то выведется варнинг
-                if(!string.IsNullOrWhiteSpace(error))
+                await process.WaitForExitAsync(); 
+
+                string output = await outputTask;
+                string error = await errorTask;
+
+                if (!string.IsNullOrWhiteSpace(error))
                 {
-                    _logger.Warn($"[output error warning]: {error}");
+                    _logger.Warn($"[warning]: {error}");
                 }
 
-                return output; // возврат аутпута 
+                return output; 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                _logger.Error($"Exception while executing: {command}"); // вывод сведений об ошибке (красный цвет)
-                return string.Empty; // возврат пустой строки
+                _logger.Error($"Exception while executing: {command}"); 
+                return string.Empty; 
             }
         }
     }
