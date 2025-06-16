@@ -29,7 +29,6 @@ namespace LinuxMonitor.BashExecutor
                     }
                 };
 
-                _logger.Info($"Executing command: {command}");
                 process.Start(); 
 
                 Task<string> outputTask = process.StandardOutput.ReadToEndAsync(); 
