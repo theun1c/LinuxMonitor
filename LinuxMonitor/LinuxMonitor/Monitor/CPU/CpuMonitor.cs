@@ -1,15 +1,9 @@
 ﻿using LinuxMonitor.BashExecutor;
 using LinuxMonitor.Logging;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace LinuxMonitor.Monitor
+namespace LinuxMonitor.Monitor.CPU
 {
     public class CpuMonitor : IMonitor
     {
@@ -24,7 +18,7 @@ namespace LinuxMonitor.Monitor
             {
                 var executor = new LinuxExecutor(_logger);
 
-                string output = await executor.ExecuteLinuxCommandAsync("top -bn1 | grep \"Cpu\\(s\\)\"");
+                string output = await executor.ExecuteLinuxCommandAsync("top -bn1 | grep \"%Cpu");
                 var match = Regex.Match(output, @"(\d+\.\d+)\s+id");
                 if (match.Success)
                 {
@@ -39,7 +33,6 @@ namespace LinuxMonitor.Monitor
             {
                 _logger.Error($"[CPU] Monitoring failed: {ex.Message}");
             }
-           
         }
     }
 }

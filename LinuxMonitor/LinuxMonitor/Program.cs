@@ -1,9 +1,7 @@
-﻿using LinuxMonitor.BashExecutor;
-using LinuxMonitor.Logging;
-using LinuxMonitor.Monitor;
-using System.Globalization;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
+﻿using LinuxMonitor.Logging.ConsoleLogging;
+using LinuxMonitor.Monitor.CPU;
+using LinuxMonitor.Monitor.Memory;
+using LinuxMonitor.Monitor.Storage;
 
 namespace LinuxMonitor
 {
