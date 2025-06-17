@@ -3,6 +3,10 @@ using LinuxMonitor.Logging;
 
 namespace LinuxMonitor.Monitor.Storage
 {
+    /// <summary>
+    /// ENG: monitoring class for storage
+    /// RUS: класс мониторинга для хранилища
+    /// </summary>
     public class StorageMonitor : IMonitor
     {
         readonly ILogger _logger;
@@ -10,6 +14,12 @@ namespace LinuxMonitor.Monitor.Storage
         {
             _logger = logger;
         }
+
+        /// <summary>
+        /// ENG: the main monitoring method for storage
+        /// RUS: главный метод мониторинга для хранилища
+        /// </summary>
+        /// <returns>console output</returns>
         public async Task MonitorAsync()
         {
             try

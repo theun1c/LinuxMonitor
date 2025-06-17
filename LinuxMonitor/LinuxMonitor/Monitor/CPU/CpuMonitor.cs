@@ -5,6 +5,10 @@ using System.Text.RegularExpressions;
 
 namespace LinuxMonitor.Monitor.CPU
 {
+    /// <summary>
+    /// ENG: monitoring class for CPU
+    /// RUS: класс мониторинга для ЦП
+    /// </summary>
     public class CpuMonitor : IMonitor
     {
         readonly ILogger _logger;
@@ -12,21 +16,30 @@ namespace LinuxMonitor.Monitor.CPU
         {
             _logger = logger;
         }
+
+        /// <summary>
+        /// ENG: the main monitoring method for CPU
+        /// RUS: главный метод мониторинга для ЦП
+        /// </summary>
+        /// <returns>console output</returns>
         public async Task MonitorAsync()
         {
             try
             {
                 var executor = new LinuxExecutor(_logger);
 
-                string output = await executor.ExecuteLinuxCommandAsync("top -bn1 | grep \"%Cpu");
-                var match = Regex.Match(output, @"(\d+\.\d+)\s+id");
-                if (match.Success)
+                string output = await executor.ExecuteLinuxCommandAsync("vmstat 1 2");
+                var lines = output.Split('\n');
+                if (lines.Length >= 2)
                 {
-                    double idle = double.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
-                    double usage = 100 - idle;
-                    _logger.Info($"[CPU] CPU Usage: {usage:F1}%");
+                    var parts = lines[3].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length >= 15)
+                    {
+                        string usage = parts[14];
+                        _logger.Info($"[CPU] CPU Usage: {100 - Convert.ToInt32(usage)}%");
+                    }
                 }
-
+      
                 return;
             }
             catch (Exception ex) 

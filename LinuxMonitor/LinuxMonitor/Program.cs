@@ -9,8 +9,10 @@ namespace LinuxMonitor
     {
         static async Task Main(string[] args)
         {
-            var logger = new ConsoleLogger(); 
-
+            var logger = new ConsoleLogger();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine($"[TIME] {DateTime.Now:HH:mm:ss}");
+            
             await Task.WhenAll(
                 new CpuMonitor(logger).MonitorAsync(),
                 new StorageMonitor(logger).MonitorAsync(),
