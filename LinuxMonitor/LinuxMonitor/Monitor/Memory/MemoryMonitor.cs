@@ -3,6 +3,10 @@ using LinuxMonitor.Logging;
 
 namespace LinuxMonitor.Monitor.Memory
 {
+    /// <summary>
+    /// ENG: monitoring class for memory
+    /// RUS: класс мониторинга для памяти
+    /// </summary>
     public class MemoryMonitor : IMonitor
     {
         readonly ILogger _logger;
@@ -10,6 +14,12 @@ namespace LinuxMonitor.Monitor.Memory
         {
             _logger = logger;
         }
+
+        /// <summary>
+        /// ENG: the main monitoring method for memory
+        /// RUS: главный метод мониторинга для памяти
+        /// </summary>
+        /// <returns>console output</returns>
         public async Task MonitorAsync()
         {
             try

@@ -3,6 +3,10 @@ using System.Diagnostics;
 
 namespace LinuxMonitor.BashExecutor
 {
+    /// <summary>
+    /// ENG: a class for inserting commands into the console
+    /// RUS: класс для вставки команд в консоль
+    /// </summary>
     public class LinuxExecutor
     {
         private readonly ILogger _logger; 
