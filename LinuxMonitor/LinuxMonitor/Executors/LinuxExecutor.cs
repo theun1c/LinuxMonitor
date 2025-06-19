@@ -52,7 +52,7 @@ namespace LinuxMonitor.BashExecutor
             }
             catch (Exception ex)
             {
-                _logger.Error($"Exception while executing: {command}"); 
+                _logger.Error($"Exception while executing: {command} - {ex.Message}"); 
                 return string.Empty; 
             }
         }
