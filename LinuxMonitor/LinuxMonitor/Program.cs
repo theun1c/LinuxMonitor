@@ -2,6 +2,7 @@
 using LinuxMonitor.Monitor.CPU;
 using LinuxMonitor.Monitor.Memory;
 using LinuxMonitor.Monitor.Storage;
+using LinuxMonitor.Monitor.SystemTime;
 
 namespace LinuxMonitor
 {
@@ -10,10 +11,8 @@ namespace LinuxMonitor
         static async Task Main(string[] args)
         {
             var logger = new ConsoleLogger();
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine($"[TIME] {DateTime.Now:HH:mm:ss}");
-            
             await Task.WhenAll(
+                new SystemTimeMonitor(logger).MonitorAsync(),
                 new CpuMonitor(logger).MonitorAsync(),
                 new StorageMonitor(logger).MonitorAsync(),
                 new MemoryMonitor(logger).MonitorAsync()
