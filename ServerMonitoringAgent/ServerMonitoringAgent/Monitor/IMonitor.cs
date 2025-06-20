@@ -1,4 +1,4 @@
-﻿namespace LinuxMonitor.Monitor
+﻿namespace ServerMonitoringAgent.Monitor
 {
     /// <summary>
     /// ENG: interface of the monitoring class

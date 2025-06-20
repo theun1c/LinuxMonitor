@@ -1,7 +1,7 @@
-﻿using LinuxMonitor.BashExecutor;
-using LinuxMonitor.Logging;
+﻿using ServerMonitoringAgent.BashExecutor;
+using ServerMonitoringAgent.Logging;
 
-namespace LinuxMonitor.Monitor.Storage
+namespace ServerMonitoringAgent.Monitor.Storage
 {
     /// <summary>
     /// ENG: monitoring class for storage

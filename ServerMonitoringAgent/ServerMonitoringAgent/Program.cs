@@ -1,9 +1,9 @@
-﻿using LinuxMonitor.Logging.ConsoleLogging;
-using LinuxMonitor.Monitor.CPU;
-using LinuxMonitor.Monitor.Memory;
-using LinuxMonitor.Monitor.Network;
-using LinuxMonitor.Monitor.Storage;
-using LinuxMonitor.Monitor.SystemTime;
+﻿using ServerMonitoringAgent.Logging.ConsoleLogging;
+using ServerMonitoringAgent.Monitor.CPU;
+using ServerMonitoringAgent.Monitor.Memory;
+using ServerMonitoringAgent.Monitor.Network;
+using ServerMonitoringAgent.Monitor.Storage;
+using ServerMonitoringAgent.Monitor.SystemTime;
 
 namespace LinuxMonitor
 {

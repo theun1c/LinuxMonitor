@@ -1,12 +1,12 @@
-﻿using LinuxMonitor.BashExecutor;
-using LinuxMonitor.Logging;
+﻿using ServerMonitoringAgent.BashExecutor;
+using ServerMonitoringAgent.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LinuxMonitor.Monitor.SystemTime
+namespace ServerMonitoringAgent.Monitor.SystemTime
 {
     public class SyncTimeMonitor : IMonitor
     {

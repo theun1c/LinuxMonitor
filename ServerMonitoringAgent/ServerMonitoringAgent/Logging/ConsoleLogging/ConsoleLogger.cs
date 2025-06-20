@@ -1,4 +1,4 @@
-﻿namespace LinuxMonitor.Logging.ConsoleLogging
+﻿namespace ServerMonitoringAgent.Logging.ConsoleLogging
 {
     /// <summary>
     /// ENG: console logger class
