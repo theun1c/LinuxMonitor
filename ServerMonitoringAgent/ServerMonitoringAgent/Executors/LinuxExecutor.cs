@@ -1,7 +1,7 @@
-﻿using LinuxMonitor.Logging;
+﻿using ServerMonitoringAgent.Logging;
 using System.Diagnostics;
 
-namespace LinuxMonitor.BashExecutor
+namespace ServerMonitoringAgent.BashExecutor
 {
     /// <summary>
     /// ENG: a class for inserting commands into the console

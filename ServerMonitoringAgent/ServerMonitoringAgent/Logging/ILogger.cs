@@ -1,4 +1,4 @@
-﻿namespace LinuxMonitor.Logging
+﻿namespace ServerMonitoringAgent.Logging
 {
     /// <summary>
     /// ENG: interface for logger 

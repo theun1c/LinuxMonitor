@@ -1,5 +1,5 @@
-﻿using LinuxMonitor.BashExecutor;
-using LinuxMonitor.Logging;
+﻿using ServerMonitoringAgent.BashExecutor;
+using ServerMonitoringAgent.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace LinuxMonitor.Monitor.Network
+namespace ServerMonitoringAgent.Monitor.Network
 {
     public class NetworkMonitor : IMonitor
     {

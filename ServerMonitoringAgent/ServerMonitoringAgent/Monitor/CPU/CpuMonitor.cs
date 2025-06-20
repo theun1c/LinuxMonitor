@@ -1,9 +1,9 @@
-﻿using LinuxMonitor.BashExecutor;
-using LinuxMonitor.Logging;
+﻿using ServerMonitoringAgent.BashExecutor;
+using ServerMonitoringAgent.Logging;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace LinuxMonitor.Monitor.CPU
+namespace ServerMonitoringAgent.Monitor.CPU
 {
     /// <summary>
     /// ENG: monitoring class for CPU
