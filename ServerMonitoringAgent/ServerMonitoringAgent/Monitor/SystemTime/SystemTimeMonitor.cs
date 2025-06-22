@@ -2,6 +2,7 @@
 using ServerMonitoringAgent.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,20 +25,32 @@ namespace ServerMonitoringAgent.Monitor.SystemTime
 
                 string dateCommand = "date -u '+%a %Y-%m-%d %H:%M:%S UTC'";
 
-                string dateOutput = await executor.ExecuteLinuxCommandAsync(dateCommand);
+                string dateOutput = (await executor.ExecuteLinuxCommandAsync(dateCommand)).Trim();
 
-                dateOutput = dateOutput.Trim(); // Thu 2025-06-19 01:51:18 UTC
 
-                string systemTime = DateTime.UtcNow.ToString("ddd yyyy-MM-dd HH:mm:ss 'UTC'");
+                DateTime dateOutputDT = DateTime.ParseExact(
+                    dateOutput,
+                    "ddd yyyy-MM-dd HH:mm:ss 'UTC'",
+                    CultureInfo.InvariantCulture
+                );
+                dateOutputDT = dateOutputDT.AddHours(3);
 
-                if (systemTime == dateOutput)
+                DateTime systemTimeDT = DateTime.Now;
+
+                TimeSpan difference = systemTimeDT - dateOutputDT;
+                double secondsDifference = Math.Abs(difference.TotalSeconds);
+
+                if (secondsDifference >= 15) 
                 {
-                    _logger.Info($"[SYSTIME] UTC: {dateOutput}");
+                    _logger.Warn("[SYSTIME] 0");
                 }
-
+                else
+                {
+                    _logger.Info("[SYSTIME] 1");
+                }
                 return;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 _logger.Error($"[SYSTIME] Monitoring failed: {ex.Message}");
             }

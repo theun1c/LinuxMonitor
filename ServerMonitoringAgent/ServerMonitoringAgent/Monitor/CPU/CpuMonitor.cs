@@ -36,7 +36,7 @@ namespace ServerMonitoringAgent.Monitor.CPU
                     if (parts.Length >= 15)
                     {
                         string usage = parts[14];
-                        _logger.Info($"[CPU] CPU Usage: {100 - Convert.ToInt32(usage)}%");
+                        _logger.Info($"[CPU] {100 - Convert.ToInt32(usage)}");
                     }
                 }
       

@@ -11,15 +11,28 @@ namespace LinuxMonitor
     {
         static async Task Main(string[] args)
         {
-
-            // ПОЛУЧАЮ СПИСКОМ МЕТКИ [] из аргументов консоли - чета типо фильтров
-            // TODO: сделать выполнение команд исходя из полученных "фильтров" аргументов консоли
-            // TODO: сделать доку + сделать удобный вывод [CPU] 10% вместо каких-то строк...
             var logger = new ConsoleLogger();
+
+            if (args.Length >= 1)
+            {
+                foreach (string arg in args)
+                {
+                    if (arg == "[NETWORK]")
+                    {
+                        await new NetworkMonitor(logger).MonitorAsync();
+                    }
+                    else if (arg == "[SYSTIME]")
+                    {
+                        await new SystemTimeMonitor(logger).MonitorAsync();
+                    }
+                    else if (arg == "[SYNCTIME]")
+                    {
+                        await new SyncTimeMonitor(logger).MonitorAsync();
+                    }
+                }
+            }
+
             await Task.WhenAll(
-                new NetworkMonitor(logger).MonitorAsync(),
-                new SyncTimeMonitor(logger).MonitorAsync(),
-                new SystemTimeMonitor(logger).MonitorAsync(),
                 new CpuMonitor(logger).MonitorAsync(),
                 new StorageMonitor(logger).MonitorAsync(),
                 new MemoryMonitor(logger).MonitorAsync()

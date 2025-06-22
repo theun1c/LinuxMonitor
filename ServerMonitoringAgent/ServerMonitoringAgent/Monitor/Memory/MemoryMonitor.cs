@@ -1,5 +1,6 @@
 ﻿using ServerMonitoringAgent.BashExecutor;
 using ServerMonitoringAgent.Logging;
+using System.Text.RegularExpressions;
 
 namespace ServerMonitoringAgent.Monitor.Memory
 {
@@ -26,7 +27,7 @@ namespace ServerMonitoringAgent.Monitor.Memory
             {
                 var executor = new LinuxExecutor(_logger);
 
-                string output = await executor.ExecuteLinuxCommandAsync("free -h");
+                string output = await executor.ExecuteLinuxCommandAsync("free -m");
                 var lines = output.Split('\n');
                 var memLine = lines.FirstOrDefault(l => l.StartsWith("Mem:"));
                 if (memLine != null)
@@ -35,8 +36,21 @@ namespace ServerMonitoringAgent.Monitor.Memory
                     if (parts.Length >= 3)
                     {
                         string total = parts[1];
+                        Match totalMatch = Regex.Match(total, @"\d+\.?\d*");
                         string used = parts[2];
-                        _logger.Info($"[MEMORY] RAM Used: {used} / {total}");
+                        Match usedMatch = Regex.Match(used, @"\d+\.?\d*");
+
+                        if (totalMatch.Success && usedMatch.Success )
+                        {
+                            double totalVal = double.Parse(totalMatch.Value);
+                            double usedVal = double.Parse(usedMatch.Value);
+                            double percent = (usedVal / totalVal) * 100;
+                            _logger.Info($"[MEMORY] {percent:F0}");
+                        }
+                        else
+                        {
+                            _logger.Error("[MEMORY] Converting failed");
+                        }
                     }
                 }
 

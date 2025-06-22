@@ -25,25 +25,24 @@ namespace ServerMonitoringAgent.Monitor.SystemTime
 
                 string syncOutput = await executor.ExecuteLinuxCommandAsync(syncCommand);
 
-                syncOutput = syncOutput.Trim(); // yes/no sudo systemctl start ntp
+                syncOutput = syncOutput.Trim();
 
                 if (syncOutput == "no")
                 {
-                    _logger.Warn($"[SYNCTIME] Is sync: {syncOutput}");
+                    _logger.Warn($"[SYNCTIME] 0");
                 }
-                else if (syncOutput == "yes") 
+                else if (syncOutput == "yes")
                 {
-                    _logger.Info($"[SYNCTIME] Is sync: {syncOutput}");
+                    _logger.Info($"[SYNCTIME] 1");
                 }
                 else
                 {
-                    _logger.Error($"[SYNCTIME] Error");
+                    _logger.Error($"[SYNCTIME] Parsing failed");
                 }
-
 
                 return;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 _logger.Error($"[SYNCTIME] Monitoring failed: {ex.Message}");
             }
