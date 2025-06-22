@@ -1,5 +1,6 @@
 ﻿using ServerMonitoringAgent.BashExecutor;
 using ServerMonitoringAgent.Logging;
+using System.Text.RegularExpressions;
 
 namespace ServerMonitoringAgent.Monitor.Storage
 {
@@ -34,7 +35,15 @@ namespace ServerMonitoringAgent.Monitor.Storage
                     if (parts.Length >= 5)
                     {
                         string usage = parts[4];
-                        _logger.Info($"[STORAGE] Disk Usage: {usage}");
+                        Match usageMatch = Regex.Match(usage, @"\d+");
+                        if (usageMatch.Success) 
+                        {
+                            _logger.Info($"[STORAGE] {usageMatch}");
+                        }
+                        else
+                        {
+                            _logger.Error("[STORAGE] Parsing failed");
+                        }
                     }
                 }
 
