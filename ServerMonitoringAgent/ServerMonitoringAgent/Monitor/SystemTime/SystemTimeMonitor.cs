@@ -23,16 +23,11 @@ namespace ServerMonitoringAgent.Monitor.SystemTime
             {
                 var executor = new LinuxExecutor(_logger);
 
-                string dateCommand = "date -u '+%a %Y-%m-%d %H:%M:%S UTC'";
+                string dateCommand = "date -u +'%d.%m.%Y %H:%M:%S'";
 
                 string dateOutput = (await executor.ExecuteLinuxCommandAsync(dateCommand)).Trim();
 
-
-                DateTime dateOutputDT = DateTime.ParseExact(
-                    dateOutput,
-                    "ddd yyyy-MM-dd HH:mm:ss 'UTC'",
-                    CultureInfo.InvariantCulture
-                );
+                DateTime dateOutputDT = DateTime.ParseExact(dateOutput, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture);
                 dateOutputDT = dateOutputDT.AddHours(3);
 
                 DateTime systemTimeDT = DateTime.Now;
