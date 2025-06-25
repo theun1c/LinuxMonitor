@@ -21,25 +21,34 @@ namespace ServerMonitoringAgent.Monitor.Network
             try
             {
                 var executor = new LinuxExecutor(_logger);
+                string command = "nslookup nnov.ru";
 
-                string output = await executor.ExecuteLinuxCommandAsync("nslookup nnov.ru");
+                string output = await executor.ExecuteLinuxCommandAsync(command);
+                
                 var lines = output.Split('\n');
-
-                Match match = Regex.Match(lines[0], @"\.(\d+)$");
-                Match secondMatch = Regex.Match(lines[0], @"Server:\s*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})");
-                if (match.Success)
+                if (!lines[0].Contains(";; communications error to"))
                 {
-                    //_logger.Info($"[NETWORK] IP: " + secondMatch.Groups[1].Value);
-                    if (Convert.ToInt32(match.Groups[1].Value) == 160)
+                    Match match = Regex.Match(lines[0], @"\.(\d+)$");
+                    Match secondMatch = Regex.Match(lines[0], @"Server:\s*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})");
+                    if (match.Success)
                     {
-                        _logger.Info($"[NETWORK] 1");
-                    }
-                    else
-                    {
-                        _logger.Warn($"[NETWORK] 0");
+                        if (Convert.ToInt32(match.Groups[1].Value) == 160)
+                        {
+                            _logger.Info($"[NETWORK] 1");
+                        }
+                        else
+                        {
+                            _logger.Warn($"[NETWORK] 0");
+                        }
                     }
                 }
+                else
+                {
+                    _logger.Warn($"[NETWORK] 0");
+                    //_logger.Error($"[NETWORK] Monitoring failed: nslookup communications error");
+                }
 
+                return;
             }
             catch (Exception ex)
             {

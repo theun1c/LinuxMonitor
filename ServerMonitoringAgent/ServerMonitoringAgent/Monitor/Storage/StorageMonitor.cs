@@ -26,8 +26,10 @@ namespace ServerMonitoringAgent.Monitor.Storage
             try
             {
                 var executor = new LinuxExecutor(_logger);
+                string command = "df /";
 
-                string output = await executor.ExecuteLinuxCommandAsync("df /");
+                string output = await executor.ExecuteLinuxCommandAsync(command);
+
                 var lines = output.Split('\n');
                 if (lines.Length >= 2)
                 {
@@ -45,6 +47,10 @@ namespace ServerMonitoringAgent.Monitor.Storage
                             _logger.Error("[STORAGE] Parsing failed");
                         }
                     }
+                }
+                else
+                {
+                    _logger.Error("[STORAGE] Parsing failed");
                 }
 
                 return;

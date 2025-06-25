@@ -27,8 +27,9 @@ namespace ServerMonitoringAgent.Monitor.CPU
             try
             {
                 var executor = new LinuxExecutor(_logger);
+                string command = "vmstat 1 2";
 
-                string output = await executor.ExecuteLinuxCommandAsync("vmstat 1 2");
+                string output = await executor.ExecuteLinuxCommandAsync(command);
                 var lines = output.Split('\n');
                 if (lines.Length >= 2)
                 {
@@ -39,7 +40,11 @@ namespace ServerMonitoringAgent.Monitor.CPU
                         _logger.Info($"[CPU] {100 - Convert.ToInt32(usage)}");
                     }
                 }
-      
+                else
+                {
+                    _logger.Error("[CPU] Parsing failed");
+                }
+
                 return;
             }
             catch (Exception ex) 
