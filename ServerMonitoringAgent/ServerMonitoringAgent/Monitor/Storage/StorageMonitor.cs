@@ -46,6 +46,10 @@ namespace ServerMonitoringAgent.Monitor.Storage
                         }
                     }
                 }
+                else
+                {
+                    _logger.Error("[STORAGE] Parsing failed");
+                }
 
                 return;
             }

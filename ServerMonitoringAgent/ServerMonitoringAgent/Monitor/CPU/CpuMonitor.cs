@@ -39,7 +39,11 @@ namespace ServerMonitoringAgent.Monitor.CPU
                         _logger.Info($"[CPU] {100 - Convert.ToInt32(usage)}");
                     }
                 }
-      
+                else
+                {
+                    _logger.Error("[CPU] Parsing failed");
+                }
+
                 return;
             }
             catch (Exception ex) 

@@ -45,6 +45,8 @@ namespace ServerMonitoringAgent.Monitor.Network
                     _logger.Warn($"[NETWORK] 0");
                     //_logger.Error($"[NETWORK] Monitoring failed: nslookup communications error");
                 }
+
+                return;
             }
             catch (Exception ex)
             {

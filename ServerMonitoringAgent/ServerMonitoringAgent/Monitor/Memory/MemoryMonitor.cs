@@ -53,6 +53,11 @@ namespace ServerMonitoringAgent.Monitor.Memory
                         }
                     }
                 }
+                else
+                {
+                    _logger.Error("[MEMORY] Parsing failed");
+
+                }
 
                 return;
             }

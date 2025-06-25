@@ -43,6 +43,7 @@ namespace ServerMonitoringAgent.Monitor.SystemTime
                 {
                     _logger.Info("[SYSTIME] 1");
                 }
+
                 return;
             }
             catch (Exception ex)

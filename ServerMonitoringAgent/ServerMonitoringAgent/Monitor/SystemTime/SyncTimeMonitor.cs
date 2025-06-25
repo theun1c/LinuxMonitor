@@ -23,9 +23,7 @@ namespace ServerMonitoringAgent.Monitor.SystemTime
 
                 string syncCommand = "timedatectl | awk '/System clock synchronized/ {print $4}'";
 
-                string syncOutput = await executor.ExecuteLinuxCommandAsync(syncCommand);
-
-                syncOutput = syncOutput.Trim();
+                string syncOutput = (await executor.ExecuteLinuxCommandAsync(syncCommand)).Trim();
 
                 if (syncOutput == "no")
                 {
