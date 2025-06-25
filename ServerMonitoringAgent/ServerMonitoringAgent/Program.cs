@@ -10,63 +10,42 @@ using ServerMonitoringAgent.Monitor.Memory;
 using ServerMonitoringAgent.Monitor.Network;
 using ServerMonitoringAgent.Monitor.Storage;
 using ServerMonitoringAgent.Monitor.SystemTime;
+using System.Runtime.CompilerServices;
+using ServerMonitoringAgent.Logging;
+using ServerMonitoringAgent.Monitor;
 
 namespace LinuxMonitor
 {
     internal class Program
     {
+        static readonly Dictionary<string, Func<ILogger, IMonitor>> ParamsDict = new Dictionary<string, Func<ILogger, IMonitor>>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["[NETWORK]"] = logger => new NetworkMonitor(logger),
+            ["[SYSTIME]"] = logger => new SystemTimeMonitor(logger),
+            ["[SYNCTIME]"] = logger => new SyncTimeMonitor(logger),
+            ["[FILESHARE]"] = logger => new FileShareMonitor(logger),
+            ["[DOCKER]"] = logger => new DockerMonitor(logger),
+            ["[SDUCON]"] = logger => new SduContainerMonitor(logger),
+            ["[POSTGRESCON]"] = logger => new PostgresContainerMonitor(logger),
+            ["[ETCDCON]"] = logger => new EtcdContainerMonitor(logger),
+            ["[DDMWEBADMINCON]"] = logger => new DdmWebAdminContainerMonitor(logger),
+            ["[DDMWEBCON]"] = logger => new DdmWebContainerMonitor(logger),
+            ["[DDMWEBAPICON]"] = logger => new DdmWebApiContainerMonitor(logger)
+        };
+
         static async Task Main(string[] args)
         {
             var logger = new ConsoleLogger();
 
-            if (args.Length >= 1)
+            foreach (var arg in args) 
             {
-                foreach (string arg in args)
+                if(ParamsDict.TryGetValue(arg.ToUpper(), out var generalMonitor))
                 {
-                    if (arg == "[NETWORK]")
-                    {
-                        await new NetworkMonitor(logger).MonitorAsync();
-                    }
-                    else if (arg == "[SYSTIME]")
-                    {
-                        await new SystemTimeMonitor(logger).MonitorAsync();
-                    }
-                    else if (arg == "[SYNCTIME]")
-                    {
-                        await new SyncTimeMonitor(logger).MonitorAsync();
-                    }
-                    else if (arg == "[FILESHARE]")
-                    {
-                        await new FileShareMonitor(logger).MonitorAsync();
-                    }
-                    else if (arg == "[DOCKER]")
-                    {
-                        await new DockerMonitor(logger).MonitorAsync();
-                    }
-                    else if (arg == "[SDUCON]")
-                    {
-                        await new SduContainerMonitor(logger).MonitorAsync();
-                    }
-                    else if (arg == "[POSTGRESCON]")
-                    {
-                        await new PostgresContainerMonitor(logger).MonitorAsync();
-                    }
-                    else if (arg == "[ETCDCON]")
-                    {
-                        await new EtcdContainerMonitor(logger).MonitorAsync();
-                    }
-                    else if (arg == "[DDMWEBADMINCON]")
-                    {
-                        await new DdmWebAdminContainerMonitor(logger).MonitorAsync();
-                    }
-                    else if(arg == "[DDMWEBCON]")
-                    {
-                        await new DdmWebContainerMonitor(logger).MonitorAsync();
-                    }
-                    else if (arg == "[DDMWEBAPICON]")
-                    {
-                        await new DdmWebApiContainerMonitor(logger).MonitorAsync();
-                    }
+                    await generalMonitor(logger).MonitorAsync();
+                }
+                else
+                {
+                    logger.Warn($"Unknown monitor parameter: {arg}");
                 }
             }
 

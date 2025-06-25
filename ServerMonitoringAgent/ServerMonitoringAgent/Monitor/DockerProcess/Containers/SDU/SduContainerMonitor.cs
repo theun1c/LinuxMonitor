@@ -21,7 +21,7 @@ namespace ServerMonitoringAgent.Monitor.DockerProcess.Containers.SDU
             {
                 var executor = new LinuxExecutor(_logger);
 
-                var output = (await executor.ExecuteLinuxCommandAsync("docker ps")).Trim();
+                var output = (await executor.ExecuteLinuxCommandAsync("docker ps --format \"{{.Names}}\"")).Trim();
 
                 if (output.Contains("sdu"))
                 {
