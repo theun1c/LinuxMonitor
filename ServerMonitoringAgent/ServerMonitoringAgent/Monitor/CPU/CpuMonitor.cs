@@ -27,8 +27,9 @@ namespace ServerMonitoringAgent.Monitor.CPU
             try
             {
                 var executor = new LinuxExecutor(_logger);
+                string command = "vmstat 1 2";
 
-                string output = await executor.ExecuteLinuxCommandAsync("vmstat 1 2");
+                string output = await executor.ExecuteLinuxCommandAsync(command);
                 var lines = output.Split('\n');
                 if (lines.Length >= 2)
                 {

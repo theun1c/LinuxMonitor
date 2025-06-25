@@ -21,10 +21,12 @@ namespace ServerMonitoringAgent.Monitor.DockerProcess.Containers.DDM
             try
             {
                 var executor = new LinuxExecutor(_logger);
+                string command = "docker ps --format \"{{.Names}}\"";
+                string containerName = "ddmweb-ui";
 
-                var output = (await executor.ExecuteLinuxCommandAsync("docker ps --format \"{{.Names}}\"")).Trim();
+                var output = (await executor.ExecuteLinuxCommandAsync(command)).Trim();
 
-                if (output.Contains("ddmweb-ui"))
+                if (output.Contains(containerName))
                 {
                     _logger.Error("[DDMWEBCON] 1");
                 }

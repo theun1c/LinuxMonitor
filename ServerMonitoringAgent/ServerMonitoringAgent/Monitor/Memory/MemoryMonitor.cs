@@ -26,8 +26,10 @@ namespace ServerMonitoringAgent.Monitor.Memory
             try
             {
                 var executor = new LinuxExecutor(_logger);
+                string command = "free -m";
 
-                string output = await executor.ExecuteLinuxCommandAsync("free -m");
+                var output = await executor.ExecuteLinuxCommandAsync(command);
+                
                 var lines = output.Split('\n');
                 var memLine = lines.FirstOrDefault(l => l.StartsWith("Mem:"));
                 if (memLine != null)

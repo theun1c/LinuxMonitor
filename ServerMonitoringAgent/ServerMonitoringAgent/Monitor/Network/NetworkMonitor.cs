@@ -21,8 +21,10 @@ namespace ServerMonitoringAgent.Monitor.Network
             try
             {
                 var executor = new LinuxExecutor(_logger);
+                string command = "nslookup nnov.ru";
 
-                string output = await executor.ExecuteLinuxCommandAsync("nslookup nnov.ru");
+                string output = await executor.ExecuteLinuxCommandAsync(command);
+                
                 var lines = output.Split('\n');
                 if (!lines[0].Contains(";; communications error to"))
                 {

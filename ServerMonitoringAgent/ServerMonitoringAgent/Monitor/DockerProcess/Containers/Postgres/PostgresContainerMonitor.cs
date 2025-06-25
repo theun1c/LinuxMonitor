@@ -21,10 +21,12 @@ namespace ServerMonitoringAgent.Monitor.DockerProcess.Containers.Postgres
             try
             {
                 var executor = new LinuxExecutor(_logger);
+                string command = "docker ps --format \"{{.Names}}\"";
+                string containerName = "postgres";
 
-                var output = (await executor.ExecuteLinuxCommandAsync("docker ps --format \"{{.Names}}\"")).Trim();
+                var output = (await executor.ExecuteLinuxCommandAsync(command)).Trim();
 
-                if (output.Contains("postgres"))
+                if (output.Contains(containerName))
                 {
                     _logger.Error("[POSTGRESCON] 1");
                 }

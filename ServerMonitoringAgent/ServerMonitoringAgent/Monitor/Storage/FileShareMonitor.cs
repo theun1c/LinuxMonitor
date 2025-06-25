@@ -20,8 +20,8 @@ namespace ServerMonitoringAgent.Monitor.Storage
             try
             {
                 var executor = new LinuxExecutor(_logger);
-
-                string output = await executor.ExecuteLinuxCommandAsync("df -h");
+                string command = "df -h";
+                string output = await executor.ExecuteLinuxCommandAsync(command);
 
                 if (output.Contains("//10.10.130.96/share")) 
                 {

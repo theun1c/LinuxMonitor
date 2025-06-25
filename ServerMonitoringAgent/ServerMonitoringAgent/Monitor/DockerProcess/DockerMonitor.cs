@@ -21,8 +21,9 @@ namespace ServerMonitoringAgent.Monitor.DockerProcess
             try
             {
                 var executor = new LinuxExecutor(_logger);
+                string command = "systemctl status docker | grep \"Active:\" ";
 
-                var output = (await executor.ExecuteLinuxCommandAsync("systemctl status docker | grep \"Active:\" ")).Trim();
+                var output = (await executor.ExecuteLinuxCommandAsync(command)).Trim();
 
                 if (output.Contains("active (running)")) 
                 {

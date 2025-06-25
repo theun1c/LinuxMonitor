@@ -20,10 +20,12 @@ namespace ServerMonitoringAgent.Monitor.DockerProcess.Containers.SDU
             try
             {
                 var executor = new LinuxExecutor(_logger);
+                string command = "docker ps --format \"{{.Names}}\"";
+                string containerName = "sdu";
 
-                var output = (await executor.ExecuteLinuxCommandAsync("docker ps --format \"{{.Names}}\"")).Trim();
+                var output = (await executor.ExecuteLinuxCommandAsync(command)).Trim();
 
-                if (output.Contains("sdu"))
+                if (output.Contains(containerName))
                 {
                     _logger.Error("[SDUCON] 1");
                 }
