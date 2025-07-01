@@ -5,6 +5,8 @@ VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerMonitoringAgent", "ServerMonitoringAgent\ServerMonitoringAgent.csproj", "{45959617-0217-4094-87DB-46C99D194F0F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerMonitoringAgent.Tests", "ServerMonitoringAgent.Tests\ServerMonitoringAgent.Tests.csproj", "{206F1FC6-70BD-4BE5-AC2A-1FF49340E1CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,8 +17,15 @@ Global
 		{45959617-0217-4094-87DB-46C99D194F0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45959617-0217-4094-87DB-46C99D194F0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45959617-0217-4094-87DB-46C99D194F0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{206F1FC6-70BD-4BE5-AC2A-1FF49340E1CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{206F1FC6-70BD-4BE5-AC2A-1FF49340E1CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{206F1FC6-70BD-4BE5-AC2A-1FF49340E1CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{206F1FC6-70BD-4BE5-AC2A-1FF49340E1CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3F7CF67C-0001-4D65-AF24-DB8BECC05E94}
 	EndGlobalSection
 EndGlobal

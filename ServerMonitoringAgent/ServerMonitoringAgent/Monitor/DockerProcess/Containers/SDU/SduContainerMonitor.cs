@@ -1,4 +1,5 @@
 ﻿using ServerMonitoringAgent.BashExecutor;
+using ServerMonitoringAgent.Executors;
 using ServerMonitoringAgent.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,23 +12,25 @@ namespace ServerMonitoringAgent.Monitor.DockerProcess.Containers.SDU
     public class SduContainerMonitor : IMonitor
     {
         readonly ILogger _logger;
-        public SduContainerMonitor(ILogger logger)
+        readonly ILinuxExecutor _executor;
+
+        public SduContainerMonitor(ILogger logger, ILinuxExecutor executor)
         {
             _logger = logger;
+            _executor = executor;
         }
         public async Task MonitorAsync()
         {
             try
             {
-                var executor = new LinuxExecutor(_logger);
                 string command = "docker ps --format \"{{.Names}}\"";
                 string containerName = "sdu";
 
-                var output = (await executor.ExecuteLinuxCommandAsync(command)).Trim();
+                var output = (await _executor.ExecuteLinuxCommandAsync(command)).Trim();
 
                 if (output.Contains(containerName))
                 {
-                    _logger.Error("[SDUCON] 1");
+                    _logger.Info("[SDUCON] 1");
                 }
                 else
                 {

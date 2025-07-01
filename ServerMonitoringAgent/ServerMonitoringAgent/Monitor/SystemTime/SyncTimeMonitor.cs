@@ -1,4 +1,5 @@
 ﻿using ServerMonitoringAgent.BashExecutor;
+using ServerMonitoringAgent.Executors;
 using ServerMonitoringAgent.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,19 +12,20 @@ namespace ServerMonitoringAgent.Monitor.SystemTime
     public class SyncTimeMonitor : IMonitor
     {
         readonly ILogger _logger;
-        public SyncTimeMonitor(ILogger logger)
+        readonly ILinuxExecutor _executor;
+
+        public SyncTimeMonitor(ILogger logger, ILinuxExecutor executor)
         {
             _logger = logger;
+            _executor = executor;
         }
         public async Task MonitorAsync()
         {
             try
             {
-                var executor = new LinuxExecutor(_logger);
-
                 string syncCommand = "timedatectl | awk '/System clock synchronized/ {print $4}'";
 
-                string syncOutput = (await executor.ExecuteLinuxCommandAsync(syncCommand)).Trim();
+                string syncOutput = (await _executor.ExecuteLinuxCommandAsync(syncCommand)).Trim();
 
                 if (syncOutput == "no")
                 {

@@ -1,4 +1,5 @@
 ﻿using ServerMonitoringAgent.BashExecutor;
+using ServerMonitoringAgent.Executors;
 using ServerMonitoringAgent.Logging;
 using System.Text.RegularExpressions;
 
@@ -11,9 +12,12 @@ namespace ServerMonitoringAgent.Monitor.Storage
     public class StorageMonitor : IMonitor
     {
         readonly ILogger _logger;
-        public StorageMonitor(ILogger logger)
+        readonly ILinuxExecutor _executor;
+
+        public StorageMonitor(ILogger logger, ILinuxExecutor executor)
         {
             _logger = logger;
+            _executor = executor;
         }
 
         /// <summary>
@@ -25,10 +29,9 @@ namespace ServerMonitoringAgent.Monitor.Storage
         {
             try
             {
-                var executor = new LinuxExecutor(_logger);
                 string command = "df /";
 
-                string output = await executor.ExecuteLinuxCommandAsync(command);
+                string output = await _executor.ExecuteLinuxCommandAsync(command);
 
                 var lines = output.Split('\n');
                 if (lines.Length >= 2)
