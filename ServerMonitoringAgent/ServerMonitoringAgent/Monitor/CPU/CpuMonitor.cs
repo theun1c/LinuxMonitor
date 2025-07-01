@@ -1,4 +1,5 @@
 ﻿using ServerMonitoringAgent.BashExecutor;
+using ServerMonitoringAgent.Executors;
 using ServerMonitoringAgent.Logging;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -12,9 +13,11 @@ namespace ServerMonitoringAgent.Monitor.CPU
     public class CpuMonitor : IMonitor
     {
         readonly ILogger _logger;
-        public CpuMonitor(ILogger logger)
+        readonly ILinuxExecutor _executor;
+        public CpuMonitor(ILogger logger, ILinuxExecutor executor)
         {
             _logger = logger;
+            _executor = executor;
         }
 
         /// <summary>
@@ -26,10 +29,9 @@ namespace ServerMonitoringAgent.Monitor.CPU
         {
             try
             {
-                var executor = new LinuxExecutor(_logger);
                 string command = "vmstat 1 2";
 
-                string output = await executor.ExecuteLinuxCommandAsync(command);
+                string output = await _executor.ExecuteLinuxCommandAsync(command);
                 var lines = output.Split('\n');
                 if (lines.Length >= 2)
                 {

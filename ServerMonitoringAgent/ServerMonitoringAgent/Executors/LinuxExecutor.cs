@@ -1,4 +1,5 @@
-﻿using ServerMonitoringAgent.Logging;
+﻿using ServerMonitoringAgent.Executors;
+using ServerMonitoringAgent.Logging;
 using System.Diagnostics;
 
 namespace ServerMonitoringAgent.BashExecutor
@@ -7,7 +8,7 @@ namespace ServerMonitoringAgent.BashExecutor
     /// ENG: a class for inserting commands into the console
     /// RUS: класс для вставки команд в консоль
     /// </summary>
-    public class LinuxExecutor
+    public class LinuxExecutor : ILinuxExecutor
     {
         private readonly ILogger _logger; 
 

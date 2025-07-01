@@ -1,4 +1,5 @@
 ﻿using ServerMonitoringAgent.BashExecutor;
+using ServerMonitoringAgent.Executors;
 using ServerMonitoringAgent.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,24 +12,25 @@ namespace ServerMonitoringAgent.Monitor.DockerProcess.Containers.DDM
     public class DdmWebContainerMonitor : IMonitor
     {
         readonly ILogger _logger;
-        public DdmWebContainerMonitor(ILogger logger)
+        readonly ILinuxExecutor _executor;
+        public DdmWebContainerMonitor(ILogger logger, ILinuxExecutor executor)
         {
             _logger = logger;
+            _executor = executor;
         }
 
         public async Task MonitorAsync()
         {
             try
             {
-                var executor = new LinuxExecutor(_logger);
                 string command = "docker ps --format \"{{.Names}}\"";
                 string containerName = "ddmweb-ui";
 
-                var output = (await executor.ExecuteLinuxCommandAsync(command)).Trim();
+                var output = (await _executor.ExecuteLinuxCommandAsync(command)).Trim();
 
                 if (output.Contains(containerName))
                 {
-                    _logger.Error("[DDMWEBCON] 1");
+                    _logger.Info("[DDMWEBCON] 1");
                 }
                 else
                 {
@@ -39,7 +41,7 @@ namespace ServerMonitoringAgent.Monitor.DockerProcess.Containers.DDM
             }
             catch (Exception ex)
             {
-                _logger.Error($"[SDUCON] Monitoring failed: {ex.Message}");
+                _logger.Error($"[DDMWEBCON] Monitoring failed: {ex.Message}");
             }
         }
     }

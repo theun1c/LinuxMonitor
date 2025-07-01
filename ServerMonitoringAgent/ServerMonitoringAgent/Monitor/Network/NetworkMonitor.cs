@@ -1,4 +1,5 @@
 ﻿using ServerMonitoringAgent.BashExecutor;
+using ServerMonitoringAgent.Executors;
 using ServerMonitoringAgent.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,18 +13,20 @@ namespace ServerMonitoringAgent.Monitor.Network
     public class NetworkMonitor : IMonitor
     {
         readonly ILogger _logger;
-        public NetworkMonitor(ILogger logger)
+        readonly ILinuxExecutor _executor;
+
+        public NetworkMonitor(ILogger logger, ILinuxExecutor executor)
         {
             _logger = logger;
+            _executor = executor;
         }
         public async Task MonitorAsync()
         {
             try
             {
-                var executor = new LinuxExecutor(_logger);
                 string command = "nslookup nnov.ru";
 
-                string output = await executor.ExecuteLinuxCommandAsync(command);
+                string output = await _executor.ExecuteLinuxCommandAsync(command);
                 
                 var lines = output.Split('\n');
                 if (!lines[0].Contains(";; communications error to"))

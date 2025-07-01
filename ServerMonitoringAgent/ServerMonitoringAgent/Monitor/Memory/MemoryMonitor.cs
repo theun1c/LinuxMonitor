@@ -1,4 +1,5 @@
 ﻿using ServerMonitoringAgent.BashExecutor;
+using ServerMonitoringAgent.Executors;
 using ServerMonitoringAgent.Logging;
 using System.Text.RegularExpressions;
 
@@ -11,9 +12,12 @@ namespace ServerMonitoringAgent.Monitor.Memory
     public class MemoryMonitor : IMonitor
     {
         readonly ILogger _logger;
-        public MemoryMonitor(ILogger logger)
+        readonly ILinuxExecutor _executor;
+
+        public MemoryMonitor(ILogger logger, ILinuxExecutor executor)
         {
             _logger = logger;
+            _executor = executor;
         }
 
         /// <summary>
@@ -25,10 +29,9 @@ namespace ServerMonitoringAgent.Monitor.Memory
         {
             try
             {
-                var executor = new LinuxExecutor(_logger);
                 string command = "free -m";
 
-                var output = await executor.ExecuteLinuxCommandAsync(command);
+                var output = await _executor.ExecuteLinuxCommandAsync(command);
                 
                 var lines = output.Split('\n');
                 var memLine = lines.FirstOrDefault(l => l.StartsWith("Mem:"));

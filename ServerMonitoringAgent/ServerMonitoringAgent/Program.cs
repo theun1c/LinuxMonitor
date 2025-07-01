@@ -13,35 +13,38 @@ using ServerMonitoringAgent.Monitor.SystemTime;
 using System.Runtime.CompilerServices;
 using ServerMonitoringAgent.Logging;
 using ServerMonitoringAgent.Monitor;
+using ServerMonitoringAgent.BashExecutor;
+using ServerMonitoringAgent.Executors;
 
 namespace LinuxMonitor
 {
     internal class Program
     {
-        static readonly Dictionary<string, Func<ILogger, IMonitor>> ParamsDict = new Dictionary<string, Func<ILogger, IMonitor>>(StringComparer.OrdinalIgnoreCase)
+        static readonly Dictionary<string, Func<ILogger, ILinuxExecutor, IMonitor>> ParamsDict = new Dictionary<string, Func<ILogger, ILinuxExecutor, IMonitor>>(StringComparer.OrdinalIgnoreCase)
         {
-            ["[NETWORK]"] = logger => new NetworkMonitor(logger),
-            ["[SYSTIME]"] = logger => new SystemTimeMonitor(logger),
-            ["[SYNCTIME]"] = logger => new SyncTimeMonitor(logger),
-            ["[FILESHARE]"] = logger => new FileShareMonitor(logger),
-            ["[DOCKER]"] = logger => new DockerMonitor(logger),
-            ["[SDUCON]"] = logger => new SduContainerMonitor(logger),
-            ["[POSTGRESCON]"] = logger => new PostgresContainerMonitor(logger),
-            ["[ETCDCON]"] = logger => new EtcdContainerMonitor(logger),
-            ["[DDMWEBADMINCON]"] = logger => new DdmWebAdminContainerMonitor(logger),
-            ["[DDMWEBCON]"] = logger => new DdmWebContainerMonitor(logger),
-            ["[DDMWEBAPICON]"] = logger => new DdmWebApiContainerMonitor(logger)
+            ["[NETWORK]"] = (logger, executor) => new NetworkMonitor(logger, executor),
+            ["[SYSTIME]"] = (logger, executor) => new SystemTimeMonitor(logger, executor),
+            ["[SYNCTIME]"] = (logger, executor) => new SyncTimeMonitor(logger, executor),
+            ["[FILESHARE]"] = (logger, executor) => new FileShareMonitor(logger, executor),
+            ["[DOCKER]"] = (logger, executor) => new DockerMonitor(logger, executor),
+            ["[SDUCON]"] = (logger, executor) => new SduContainerMonitor(logger, executor),
+            ["[POSTGRESCON]"] = (logger, executor) => new PostgresContainerMonitor(logger, executor),
+            ["[ETCDCON]"] = (logger, executor) => new EtcdContainerMonitor(logger, executor),
+            ["[DDMWEBADMINCON]"] = (logger, executor) => new DdmWebAdminContainerMonitor(logger, executor),
+            ["[DDMWEBCON]"] = (logger, executor) => new DdmWebContainerMonitor(logger, executor),
+            ["[DDMWEBAPICON]"] = (logger, executor) => new DdmWebApiContainerMonitor(logger, executor)
         };
 
         static async Task Main(string[] args)
         {
             var logger = new ConsoleLogger();
+            var executor = new LinuxExecutor(logger);
 
             foreach (var arg in args) 
             {
                 if(ParamsDict.TryGetValue(arg.ToUpper(), out var generalMonitor))
                 {
-                    await generalMonitor(logger).MonitorAsync();
+                    await generalMonitor(logger, executor).MonitorAsync();
                 }
                 else
                 {
@@ -50,9 +53,9 @@ namespace LinuxMonitor
             }
 
             await Task.WhenAll(
-                new CpuMonitor(logger).MonitorAsync(),
-                new StorageMonitor(logger).MonitorAsync(),
-                new MemoryMonitor(logger).MonitorAsync()
+                new CpuMonitor(logger, executor).MonitorAsync(),
+                new StorageMonitor(logger, executor).MonitorAsync(),
+                new MemoryMonitor(logger, executor).MonitorAsync()
             );
         }
     }
